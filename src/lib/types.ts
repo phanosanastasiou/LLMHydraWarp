@@ -36,11 +36,6 @@ export interface Thread {
   title: string;
   question: string;
   createdAt: string;
-  tags: string[];
-  author: {
-    id: string;
-    username: string;
-  };
   responses: ResponseVariant[];
 }
 

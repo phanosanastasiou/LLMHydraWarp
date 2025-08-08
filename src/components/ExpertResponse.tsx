@@ -1,8 +1,9 @@
-import { experts } from "@/lib/mock";
+import { db } from "@/lib/db";
 import { ResponseVariant } from "@/lib/types";
 
-export default function ExpertResponse({ response }: { response: ResponseVariant }) {
-  const expert = experts.find((e) => e.id === response.expertId);
+export default async function ExpertResponse({ response }: { response: ResponseVariant }) {
+  const expert = await db.expert.findUnique({ where: { id: response.expertId } });
+  if (!expert) return null;
   return (
     <div className="rounded border border-black/10 dark:border-white/10 p-4 space-y-2">
       <div className="flex items-center justify-between">

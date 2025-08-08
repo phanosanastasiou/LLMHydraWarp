@@ -8,10 +8,17 @@ export default function QuestionForm() {
   const [title, setTitle] = useState("");
   const [question, setQuestion] = useState("");
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // For now, route to a mock thread id
-    router.push(`/thread/t-hello-llm-hydra`);
+    const res = await fetch("/api/threads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, question }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      router.push(`/thread/${data.id}`);
+    }
   }
 
   return (

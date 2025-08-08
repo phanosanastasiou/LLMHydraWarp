@@ -1,7 +1,18 @@
 import Link from "next/link";
-import { threads } from "@/lib/mock";
+import { db } from "@/lib/db";
 
-export default function ThreadList() {
+export default async function ThreadList() {
+  const threads = await db.thread.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      question: true,
+      createdAt: true,
+      _count: { select: { responses: true } },
+    },
+  });
+
   return (
     <ul className="divide-y divide-black/10 dark:divide-white/10">
       {threads.map((t) => (
@@ -12,7 +23,7 @@ export default function ThreadList() {
             <div className="mt-2 text-xs text-black/50 dark:text-white/50 flex gap-2">
               <span>{new Date(t.createdAt).toLocaleDateString()}</span>
               <span>•</span>
-              <span>{t.responses.length} expert replies</span>
+              <span>{t._count.responses} expert replies</span>
             </div>
           </Link>
         </li>

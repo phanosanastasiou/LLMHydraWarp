@@ -1,9 +1,13 @@
 import Navbar from "@/components/Navbar";
 import ExpertResponse from "@/components/ExpertResponse";
-import { threads } from "@/lib/mock";
+import { db } from "@/lib/db";
 
-export default function ThreadPage({ params }: { params: { id: string } }) {
-  const thread = threads.find((t) => t.id === params.id);
+export default async function ThreadPage({ params }: { params: { id: string } }) {
+  const thread = await db.thread.findUnique({
+    where: { id: params.id },
+    include: { responses: { include: { expert: true }, orderBy: { createdAt: "asc" } } },
+  });
+
   if (!thread) {
     return (
       <div className="min-h-screen">
@@ -24,13 +28,18 @@ export default function ThreadPage({ params }: { params: { id: string } }) {
           <p className="text-black/70 dark:text-white/70">{thread.question}</p>
           <div className="text-xs text-black/50 dark:text-white/50 flex gap-2">
             <span>{new Date(thread.createdAt).toLocaleString()}</span>
-            <span>•</span>
-            <span>{thread.tags.join(", ")}</span>
           </div>
         </header>
         <section className="space-y-4">
           {thread.responses.map((r) => (
-            <ExpertResponse key={r.id} response={r} />
+            <ExpertResponse key={r.id} response={{
+              id: r.id,
+              expertId: r.expertId,
+              content: r.content,
+              style: (r.style as any) ?? "concise",
+              expandedLevel: r.expandedLevel,
+              votes: r.votes,
+            }} />
           ))}
         </section>
       </main>

@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Expert {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  expertise Json     // tags as JSON array
+  bio       String?
+  tone      String   @default("concise")
+
+  responses Response[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Thread {
+  id        String    @id @default(cuid())
+  title     String
+  question  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  responses Response[]
+}
+
+model Response {
+  id            String   @id @default(cuid())
+  content       String
+  style         String   @default("concise")
+  expandedLevel Int      @default(0)
+  votes         Int      @default(0)
+
+  expertId String
+  expert   Expert  @relation(fields: [expertId], references: [id])
+
+  threadId String
+  thread   Thread  @relation(fields: [threadId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+

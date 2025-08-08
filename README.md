@@ -54,5 +54,12 @@ LLM Hydra combines multiple specialized AI experts to provide comprehensive, div
 - Add auth (NextAuth) and rate limiting
 - Add realtime debate/collab via Server Actions + incremental static regen or websockets
 
+## Providers
+- OpenAI support is built in. Set environment variables:
+  - OPENAI_API_KEY=sk-...
+  - OPENAI_MODEL=gpt-4o-mini (default) or your preferred model
+
+If OPENAI_API_KEY is not set, the app uses a deterministic mock generator for local dev.
+
 ## License
 MIT
